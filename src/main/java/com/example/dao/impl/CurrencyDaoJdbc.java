@@ -1,9 +1,10 @@
 package com.example.dao.impl;
 
 import com.example.dao.CurrencyDAO;
-import com.example.exc.DbCommunicationException;
+import com.example.exc.DaoException;
 import com.example.model.Currency;
 import com.example.utils.ConnectionManager;
+import com.example.utils.Translator;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
                 result.add(map(resultSet));
             }
         } catch (SQLException e) {
-            throw new DbCommunicationException("Не удалось получить список валют", e);
+            throw Translator.translate("Не удалось получить все значения currencies", e);
         }
 
         return result;
@@ -52,11 +53,35 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DbCommunicationException("Не удалось получить валюту по коду: " + code, e);
+            throw Translator.translate("Не удалось найти валюту по коду: " + code, e);
         }
 
 
         return Optional.empty();
+    }
+
+    @Override
+    public Currency save(Currency currency) {
+        String sql = "INSERT INTO currencies(code, fullname, sign) " +
+                "VALUES (?, ?, ?) " +
+                "RETURNING id, code, fullname, sign";
+
+        try (Connection connection = connectionManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, currency.code());
+            statement.setString(2, currency.fullName());
+            statement.setString(3, currency.sign());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return map(resultSet);
+                }
+                throw new DaoException("Ошибка при сохранении currency");
+            }
+
+        } catch (SQLException e) {
+            throw Translator.translate("Не удалось сохранить: " + currency, e);
+        }
     }
 
     private Currency map(ResultSet resultSet) throws SQLException {

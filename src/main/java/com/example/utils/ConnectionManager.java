@@ -1,8 +1,6 @@
 package com.example.utils;
 
 
-import com.example.exc.DbCommunicationException;
-
 import java.sql.*;
 
 

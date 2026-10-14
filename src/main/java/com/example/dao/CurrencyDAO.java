@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface CurrencyDAO {
     List<Currency> findAll();
     Optional<Currency> findByCode(String code);
+    Currency save(Currency currency);
 }
