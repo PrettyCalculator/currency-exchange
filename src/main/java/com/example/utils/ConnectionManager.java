@@ -1,6 +1,8 @@
 package com.example.utils;
 
 
+import com.example.exc.DbConnectionException;
+
 import java.sql.*;
 
 
@@ -21,7 +23,7 @@ public class ConnectionManager {
         try {
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            throw new DbCommunicationException("Не удалось подключиться к бд", e);
+            throw new DbConnectionException("Не удалось подключиться к бд", e);
         }
     }
 

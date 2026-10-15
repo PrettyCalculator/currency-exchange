@@ -76,7 +76,7 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
                 if (resultSet.next()) {
                     return map(resultSet);
                 }
-                throw new DaoException("Ошибка при сохранении currency");
+                throw new DaoException("Ошибка при сохранении валюты.");
             }
 
         } catch (SQLException e) {
