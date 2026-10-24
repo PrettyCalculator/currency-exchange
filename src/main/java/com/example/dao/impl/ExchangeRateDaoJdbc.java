@@ -1,10 +1,10 @@
 package com.example.dao.impl;
 
 import com.example.dao.ExchangeRateDao;
-import com.example.exc.DaoException;
+import com.example.exc.dao.DaoException;
 import com.example.model.ExchangeRate;
 import com.example.utils.ConnectionManager;
-import com.example.utils.Translator;
+import com.example.utils.translator.SQLExceptionTranslator;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -42,7 +42,7 @@ public class ExchangeRateDaoJdbc implements ExchangeRateDao {
             }
 
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось получить список обменных курсов.", e);
+            throw SQLExceptionTranslator.translate("Не удалось получить список обменных курсов.", e);
         }
 
         return result;
@@ -75,7 +75,7 @@ public class ExchangeRateDaoJdbc implements ExchangeRateDao {
             }
 
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось получить обменный курс.", e);
+            throw SQLExceptionTranslator.translate("Не удалось получить обменный курс.", e);
         }
 
         return Optional.empty();
@@ -114,7 +114,7 @@ public class ExchangeRateDaoJdbc implements ExchangeRateDao {
             }
 
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось сохранить курс.", e);
+            throw SQLExceptionTranslator.translate("Не удалось сохранить курс.", e);
         }
     }
 
@@ -123,7 +123,7 @@ public class ExchangeRateDaoJdbc implements ExchangeRateDao {
         String sql = """
                 UPDATE exchange_rates
                 SET rate = ?
-                WHERE id = ?
+                    WHERE id = ?
                 """;
 
         try (Connection connection = manager.getConnection();
@@ -139,7 +139,7 @@ public class ExchangeRateDaoJdbc implements ExchangeRateDao {
             return Optional.of(exchangeRate);
 
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось обновить курс.", e);
+            throw SQLExceptionTranslator.translate("Не удалось обновить курс.", e);
         }
     }
 

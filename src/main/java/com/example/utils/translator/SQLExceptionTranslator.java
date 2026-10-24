@@ -1,22 +1,23 @@
-package com.example.utils;
+package com.example.utils.translator;
 
-import com.example.exc.DaoException;
-import com.example.exc.ForeignKeyViolationException;
-import com.example.exc.UniqueViolationException;
+import com.example.exc.dao.DaoException;
+import com.example.exc.dao.ForeignKeyViolationException;
+import com.example.exc.dao.UniqueViolationException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public final class Translator {
-    private Translator() {}
-    private static final Map<String, BiFunction<String, Throwable, DaoException>> sqlExceptionMap = new HashMap<>();
+public final class SQLExceptionTranslator {
 
+    private SQLExceptionTranslator() {}
 
+    private static final Map<String, BiFunction<String, Throwable, DaoException>> sqlExceptionMap;
 
 
     static {
+        sqlExceptionMap = new HashMap<>();
         sqlExceptionMap.put("23505", UniqueViolationException::new);
         sqlExceptionMap.put("23503", ForeignKeyViolationException::new);
     }

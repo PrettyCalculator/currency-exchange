@@ -1,4 +1,4 @@
-package com.example.exc;
+package com.example.exc.dao;
 
 public class UniqueViolationException extends DaoException {
     public UniqueViolationException(String message) {

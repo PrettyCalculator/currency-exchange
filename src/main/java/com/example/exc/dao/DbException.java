@@ -1,4 +1,4 @@
-package com.example.exc;
+package com.example.exc.dao;
 
 public class DbException extends DaoException {
     public DbException(String message) {

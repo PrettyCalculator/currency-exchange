@@ -1,17 +1,17 @@
 package com.example.dao.impl;
 
-import com.example.dao.CurrencyDAO;
-import com.example.exc.DaoException;
+import com.example.dao.CurrencyDao;
+import com.example.exc.dao.DaoException;
 import com.example.model.Currency;
 import com.example.utils.ConnectionManager;
-import com.example.utils.Translator;
+import com.example.utils.translator.SQLExceptionTranslator;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CurrencyDaoJdbc implements CurrencyDAO {
+public class CurrencyDaoJdbc implements CurrencyDao {
     private final ConnectionManager connectionManager;
 
 
@@ -32,7 +32,7 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
                 result.add(map(resultSet));
             }
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось получить все значения currencies", e);
+            throw SQLExceptionTranslator.translate("Не удалось получить все значения currencies", e);
         }
 
         return result;
@@ -53,7 +53,7 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
                 }
             }
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось найти валюту по коду: " + code, e);
+            throw SQLExceptionTranslator.translate("Не удалось найти валюту по коду: " + code, e);
         }
 
 
@@ -80,7 +80,7 @@ public class CurrencyDaoJdbc implements CurrencyDAO {
             }
 
         } catch (SQLException e) {
-            throw Translator.translate("Не удалось сохранить: " + currency, e);
+            throw SQLExceptionTranslator.translate("Не удалось сохранить: " + currency, e);
         }
     }
 

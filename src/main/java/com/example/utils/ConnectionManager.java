@@ -1,7 +1,7 @@
 package com.example.utils;
 
 
-import com.example.exc.DbConnectionException;
+import com.example.exc.dao.DbConnectionException;
 
 import java.sql.*;
 

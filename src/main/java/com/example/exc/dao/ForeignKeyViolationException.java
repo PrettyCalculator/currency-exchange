@@ -1,4 +1,4 @@
-package com.example.exc;
+package com.example.exc.dao;
 
 public class ForeignKeyViolationException extends DaoException{
     public ForeignKeyViolationException(String message) {
