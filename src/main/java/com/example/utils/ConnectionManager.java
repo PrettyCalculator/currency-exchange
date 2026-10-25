@@ -11,7 +11,15 @@ public class ConnectionManager {
     private final String user;
     private final String password;
 
-    public ConnectionManager() {
+    static {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("PostgreSQL driver not found", e);
+        }
+    }
+
+    public ConnectionManager(){
         url = PropertiesHandler.getProperty("db.url");
         user = PropertiesHandler.getProperty("db.user");
         password = PropertiesHandler.getProperty("db.password");

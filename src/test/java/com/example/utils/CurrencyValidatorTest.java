@@ -56,7 +56,7 @@ public class CurrencyValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"12", "", "1234"})
+    @ValueSource(strings = {"12232323", "", "1234...."})
     public void signWithInvalidLengthDoesNotPassValidation(String code) {
         assertThrows(ValidationException.class,
                 () -> Validator.validateSign(code));
