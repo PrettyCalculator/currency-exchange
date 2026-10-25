@@ -34,7 +34,4 @@ public class ConnectionManager {
             throw new DbConnectionException("Не удалось подключиться к бд", e);
         }
     }
-
-
-
 }

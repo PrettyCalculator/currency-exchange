@@ -3,6 +3,8 @@ package com.example.service;
 import com.example.dao.CurrencyDao;
 import com.example.dao.ExchangeRateDao;
 import com.example.exc.dao.DaoException;
+import com.example.exc.dao.UniqueViolationException;
+import com.example.exc.service.EntityAlreadyExistsException;
 import com.example.exc.service.EntityNotFoundException;
 import com.example.exc.service.ServiceException;
 import com.example.exc.service.ValidationException;
@@ -71,7 +73,11 @@ public class ExchangeRateService {
 
             // упаковать в exchangeRate и отправить
             return exchangeRateDao.save(new ExchangeRate(null, baseCurrency, targetCurrency, rate));
-        } catch (DaoException e) {
+        } catch (UniqueViolationException e) {
+            throw new EntityAlreadyExistsException(String.format("Курс %s -> %s уже существует", base, target));
+        }
+
+        catch (DaoException e) {
             throw DAOExceptionTranslator.translate("Не удалось сохранить курс.", e);
         }
     }

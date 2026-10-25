@@ -4,6 +4,7 @@ import com.example.dao.CurrencyDao;
 import com.example.dao.ExchangeRateDao;
 import com.example.exc.dao.DaoException;
 import com.example.exc.service.EntityNotFoundException;
+import com.example.exc.service.ValidationException;
 import com.example.model.ConversionResult;
 import com.example.model.Currency;
 import com.example.model.ExchangeRate;
@@ -38,16 +39,14 @@ public class ConversionService {
             String target = Normalizer.code(to);
 
             if (base.equals(target)) {
-                Currency currency = currencyDao.findByCode(base)
-                        .orElseThrow(() -> new EntityNotFoundException("Валюта не найдена."));
-                return new ConversionResult(currency, currency, BigDecimal.ONE, amount, amount);
+                throw new ValidationException("Base currency совпадает с target currency");
             }
 
             Currency baseCurrency = currencyDao.findByCode(base)
-                    .orElseThrow(() -> new EntityNotFoundException("Одна из валют не найдена."));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Валюта %s не найдена.", base)));
 
             Currency targetCurrency = currencyDao.findByCode(target)
-                    .orElseThrow(() -> new EntityNotFoundException("Одна из валют не найдена."));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Валюта %s не найдена.", target)));
 
             BigDecimal rate = findDirectOrReversed(base, target)
                     .or(() -> findRateViaUsd(base, target))

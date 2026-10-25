@@ -24,6 +24,7 @@ public class CurrenciesServlet extends BaseServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         List<Currency> currencies = currencyService.getCurrencies();
-        sendJson(req, res, currencies);
+        sendJson(res, currencies);
     }
+
 }

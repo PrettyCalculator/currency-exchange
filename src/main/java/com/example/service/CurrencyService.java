@@ -2,6 +2,8 @@ package com.example.service;
 
 import com.example.dao.CurrencyDao;
 import com.example.exc.dao.DaoException;
+import com.example.exc.dao.UniqueViolationException;
+import com.example.exc.service.EntityAlreadyExistsException;
 import com.example.exc.service.EntityNotFoundException;
 import com.example.model.Currency;
 import com.example.utils.Validator;
@@ -57,7 +59,11 @@ public class CurrencyService {
         try {
             return dao.save(new Currency(null, normalizedCode, normalizedFullName, normalizedSign));
 
-        } catch (DaoException e) {
+        } catch (UniqueViolationException e) {
+            throw new EntityAlreadyExistsException(String.format("Валюта с кодом %s уже существует", code));
+        }
+
+        catch (DaoException e) {
             throw DAOExceptionTranslator.translate("Не удалось сохранить валюту." , e);
         }
     }
