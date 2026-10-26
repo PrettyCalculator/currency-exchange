@@ -69,7 +69,7 @@ public class CurrencyDaoJdbc implements CurrencyDao {
         try (Connection connection = connectionManager.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, currency.code());
-            statement.setString(2, currency.fullName());
+            statement.setString(2, currency.name());
             statement.setString(3, currency.sign());
 
             try (ResultSet resultSet = statement.executeQuery()) {

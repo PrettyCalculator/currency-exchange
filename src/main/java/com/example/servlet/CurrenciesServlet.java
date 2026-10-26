@@ -27,4 +27,17 @@ public class CurrenciesServlet extends BaseServlet {
         sendJson(res, currencies);
     }
 
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        req.setCharacterEncoding("UTF-8");
+        String name = req.getParameter("name");
+        String code = req.getParameter("code");
+        String sign = req.getParameter("sign");
+
+        Currency currency = currencyService.create(code, name, sign);
+
+        res.setStatus(201);
+        sendJson(res, currency);
+    }
+
 }

@@ -1,17 +1,24 @@
 package com.example.servlet;
 
 import com.example.exc.service.ServiceException;
+import com.example.exc.service.ValidationException;
 import com.example.model.ErrorModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BaseServlet extends HttpServlet {
+public abstract class BaseServlet extends HttpServlet {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
     private ObjectMapper objectMapper;
 
@@ -46,8 +53,62 @@ public class BaseServlet extends HttpServlet {
         }
     }
 
-    public void sendErrorJson(HttpServletResponse response, int code, String message) {
+    protected void sendErrorJson(HttpServletResponse response, int code, String message) {
         response.setStatus(code);
         sendJson(response, new ErrorModel(message));
+    }
+
+    /**
+     * Разбирает строковый параметр запроса как число.
+     * Здесь проверяется только формат; допустимость значения проверяет сервис.
+     */
+    protected BigDecimal parseBigDecimal(String value) {
+        if (value == null || value.isBlank()) {
+            throw new ValidationException("Отсутствует числовой параметр запроса.");
+        }
+        try {
+            return new BigDecimal(value.trim());
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Параметр запроса должен быть числом.");
+        }
+    }
+
+    /**
+     * Возвращает часть адреса после шаблона сервлета без ведущего слэша:
+     * для "/currency/EUR" при маппинге "/currency/*" вернёт "EUR".
+     *
+     * @param missingMessage текст ошибки 400, если в адресе ничего нет
+     */
+    protected String getPathParameter(HttpServletRequest request, String missingMessage) {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            throw new ValidationException(missingMessage);
+        }
+        return pathInfo.substring(1);
+    }
+
+    protected Map<String, String> readAndParseRequestBody(BufferedReader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        String body = sb.toString();
+        if (body.isEmpty()) {
+            throw new ValidationException("Пустое тело запроса");
+        }
+
+        String[] parts = body.split("&");
+        Map<String, String> map = new HashMap<>();
+        for (String part: parts) {
+            if (part.contains("=")) {
+                String[] p = part.split("=", 2);
+                String key = URLDecoder.decode(p[0], StandardCharsets.UTF_8);
+                String value = URLDecoder.decode(p[1], StandardCharsets.UTF_8);
+                map.put(key, value);
+            }
+        }
+
+        return map;
     }
 }

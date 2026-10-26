@@ -36,8 +36,11 @@ public final class Validator {
     }
 
     public static void validateRate(BigDecimal rate) {
-        if (rate == null || rate.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ValidationException("Неверный rate.");
+        if (rate == null) {
+            throw new ValidationException("Пустое значение курса.");
+        }
+        if (rate.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("Значение курса <= 0");
         }
     }
 

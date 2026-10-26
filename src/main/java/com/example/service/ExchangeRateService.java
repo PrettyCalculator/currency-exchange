@@ -61,7 +61,7 @@ public class ExchangeRateService {
             Validator.validateRate(rate);
             String baseCode = Normalizer.code(base);
             String targetCode = Normalizer.code(target);
-            checkCurrencyCodesEquals(base, target);
+            checkCurrencyCodesEquals(baseCode, targetCode);
 
             // проверить наличие валюты base
             Currency baseCurrency = currencyDAO.findByCode(baseCode).orElseThrow(
