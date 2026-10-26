@@ -21,7 +21,6 @@ import jakarta.servlet.annotation.WebListener;
 public class AppInitListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-
         ConnectionManager connectionManager = new ConnectionManager();
         CurrencyDao currencyDao = new CurrencyDaoJdbc(connectionManager);
         ExchangeRateDao exchangeRateDao = new ExchangeRateDaoJdbc(connectionManager);
