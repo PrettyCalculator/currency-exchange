@@ -8,6 +8,7 @@ import com.example.model.Currency;
 import com.example.service.ConversionService;
 import com.example.service.CurrencyService;
 import com.example.service.ExchangeRateService;
+import com.example.servlet.Attributes;
 import com.example.utils.ConnectionManager;
 import com.example.utils.PropertiesHandler;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -16,6 +17,8 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+
+import javax.print.attribute.standard.PagesPerMinute;
 
 @WebListener
 public class AppInitListener implements ServletContextListener {
@@ -32,9 +35,18 @@ public class AppInitListener implements ServletContextListener {
         objectMapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
 
         ServletContext context = sce.getServletContext();
-        context.setAttribute("conversionService", conversionService);
-        context.setAttribute("currencyService", currencyService);
-        context.setAttribute("exchangeRateService", exchangeRateService);
-        context.setAttribute("objectMapper", objectMapper);
+        context.setAttribute(Attributes.CONNECTION_MANAGER.value(), connectionManager);
+        context.setAttribute(Attributes.CONVERSION_SERVICE.value(), conversionService);
+        context.setAttribute(Attributes.CURRENCY_SERVICE.value(), currencyService);
+        context.setAttribute(Attributes.EXCHANGE_RATE_SERVICE.value(), exchangeRateService);
+        context.setAttribute(Attributes.OBJECT_MAPPER.value(), objectMapper);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ConnectionManager connectionManager = (ConnectionManager) sce.getServletContext().getAttribute(Attributes.CONNECTION_MANAGER.value());
+        if (connectionManager != null) {
+            connectionManager.closeDataSource();
+        }
     }
 }

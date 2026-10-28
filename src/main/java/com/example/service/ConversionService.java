@@ -54,7 +54,7 @@ public class ConversionService {
 
             BigDecimal convertedAmount = amount.multiply(rate).setScale(2, RoundingMode.HALF_UP);
 
-            return new ConversionResult(baseCurrency, targetCurrency, rate.setScale(2, RoundingMode.HALF_UP), amount, convertedAmount);
+            return new ConversionResult(baseCurrency, targetCurrency, rate.setScale(6, RoundingMode.HALF_UP), amount, convertedAmount);
 
         } catch (DaoException e) {
             throw DAOExceptionTranslator.translate("Ошибка конвертации", e);

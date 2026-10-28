@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class PropertiesHandler {
-
     private static final Properties properties = new Properties();
 
     static {
@@ -13,19 +12,28 @@ public final class PropertiesHandler {
     }
 
     public static String getProperty(String key) {
-        return properties.getProperty(key);
+        String value = System.getenv(key);
+        if (value == null) {
+
+            value = properties.getProperty(key);
+
+            if (value == null) {
+                throw new RuntimeException("Не удалось получить переменную конфигурации: " + key);
+            }
+        }
+        return value;
     }
 
 
-    public static void loadProperties() {
+    private static void loadProperties() {
         try (InputStream is = PropertiesHandler.class.
                 getClassLoader().
                 getResourceAsStream("application.properties")) {
-
-            properties.load(is);
-
+            if (is != null) {
+                properties.load(is);
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось загрузить файл конфигурации.", e);
         }
     }
 

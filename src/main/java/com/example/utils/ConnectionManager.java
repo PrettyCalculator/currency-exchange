@@ -2,36 +2,38 @@ package com.example.utils;
 
 
 import com.example.exc.dao.DbConnectionException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
 
 
 public class ConnectionManager {
-    private final String url;
-    private final String user;
-    private final String password;
-
-    static {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("PostgreSQL driver not found", e);
-        }
-    }
+    private final HikariDataSource ds;
 
     public ConnectionManager(){
-        url = PropertiesHandler.getProperty("db.url");
-        user = PropertiesHandler.getProperty("db.user");
-        password = PropertiesHandler.getProperty("db.password");
-    }
+        HikariConfig config = new HikariConfig();
 
+
+
+        config.setDriverClassName(PropertiesHandler.getProperty("DB_DRIVER"));
+        config.setJdbcUrl(PropertiesHandler.getProperty("DB_URL"));
+        config.setUsername(PropertiesHandler.getProperty("DB_USER"));
+        config.setPassword(PropertiesHandler.getProperty("DB_PASSWORD"));
+
+        ds = new HikariDataSource(config);
+    }
 
 
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(url, user, password);
+            return ds.getConnection();
         } catch (SQLException e) {
             throw new DbConnectionException("Не удалось подключиться к бд", e);
         }
+    }
+
+    public void closeDataSource() {
+        ds.close();
     }
 }
