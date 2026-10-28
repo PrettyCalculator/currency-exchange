@@ -7,7 +7,7 @@ CREATE TABLE currencies (
 
 CREATE TABLE exchange_rates (
     id serial primary key,
-    base_сurrency_id int
+    base_currency_id int
         references currencies(id)
         on delete cascade
         not null ,
@@ -17,6 +17,6 @@ CREATE TABLE exchange_rates (
         not null,
     rate numeric(14, 6) not null,
 
-    constraint unique_comb UNIQUE (base_сurrency_id, target_currency_id),
-    constraint check_diff CHECK (base_сurrency_id <> target_currency_id)
+    constraint unique_comb UNIQUE (base_currency_id, target_currency_id),
+    constraint check_diff CHECK (base_currency_id <> target_currency_id)
 )

@@ -1,0 +1,6 @@
+# Шаблон настроек.
+
+DB_URL=jdbc:postgresql://localhost:5432/currency_db
+DB_USER=
+DB_PASSWORD=
+DB_DRIVER=org.postgresql.Driver
